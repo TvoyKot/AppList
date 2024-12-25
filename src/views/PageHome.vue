@@ -3,6 +3,6 @@
 
 <template>
   <main>
-   SOME CONTENT
+   Home
   </main>
 </template>
