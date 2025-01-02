@@ -16,7 +16,6 @@ const toggleAuth = () => {
   isLogin.value = !isLogin.value
 }
 
-
 const subtitleText = computed<string>(() => {
   return isLogin.value ? 'Аккаунта ещё нет?' : 'Уже есть аккаунт?'
 })
