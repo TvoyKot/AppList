@@ -13,13 +13,17 @@ import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Toast from 'primevue/toast'
 import ToastService from 'primevue/toastservice'
+import Textarea from 'primevue/textarea'
+import RadioButton from 'primevue/radiobutton';
 import confirmationService from 'primevue/confirmationservice'
-import ConfirmDialog from 'primevue/confirmdialog';
+import ConfirmDialog from 'primevue/confirmdialog'
 import ProgressSpinner from 'primevue/progressspinner'
-import Card from 'primevue/card';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import InlineMessage from 'primevue/inlinemessage';
+import Card from 'primevue/card'
+import DataTable from 'primevue/datatable'
+import DatePicker from 'primevue/datepicker'
+import Column from 'primevue/column'
+import InlineMessage from 'primevue/inlinemessage'
+import InputNumber from 'primevue/inputnumber'
 
 import App from './App.vue'
 import router from './router'
@@ -55,6 +59,9 @@ app.component('app-data-table', DataTable)
 app.component('app-column', Column)
 app.component('app-dialog', ConfirmDialog)
 app.component('app-message', InlineMessage)
-
+app.component('app-input-number', InputNumber)
+app.component('app-textarea', Textarea)
+app.component('app-datepicker', DatePicker)
+app.component('app-radio', RadioButton)
 
 app.mount('#app')

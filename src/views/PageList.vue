@@ -58,7 +58,9 @@ onMounted(async () => {
 <template>
   <app-dialog />
   <app-progress v-if="isLoading" />
-  <app-message v-else-if="!isLoading && interviews.length === 0" severity="info" size="large">Нет добоавленных собеседований.</app-message>
+  <app-message v-else-if="!isLoading && interviews.length === 0" severity="info" size="large"
+    >Нет добавленных собеседований.</app-message
+  >
   <div v-else>
     <h1>Список собеседований</h1>
     <app-data-table :value="interviews">
