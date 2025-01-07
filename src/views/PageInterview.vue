@@ -2,10 +2,9 @@ div
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { doc, getFirestore, getDoc, updateDoc } from 'firebase/firestore'
+import { doc, getFirestore, getDoc, updateDoc, Timestamp } from 'firebase/firestore'
 import { useUserStore } from '../stores/user'
 import type { IInterview, IStage } from '../interfaces'
-import dayjs from 'dayjs'
 
 const db = getFirestore()
 const userStore = useUserStore()
@@ -18,7 +17,21 @@ const docref = doc(db, `users/${userStore.userId}/interviews`, route.params.id a
 const getData = async (): Promise<void> => {
   isLoading.value = true
   const docSnap = await getDoc(docref)
-  interview.value = docSnap.data() as IInterview
+  if (docSnap.exists()) {
+    const data = docSnap.data() as IInterview
+    if (data.stages && data.stages.length) {
+      data.stages = data.stages.map((stage: IStage) => {
+        if (stage.date && stage.date instanceof Timestamp) {
+          return {
+            ...stage,
+            date: stage.date.toDate(),
+          }
+        }
+        return stage
+      })
+    }
+    interview.value = data
+  }
   isLoading.value = false
 }
 
@@ -27,7 +40,7 @@ const addStage = () => {
     if (!interview.value.stages) {
       interview.value.stages = []
     }
-    interview.value.stages.push({ name: '', date: '', description: '' })
+    interview.value.stages.push({ name: '', date: null, description: '' })
   }
 }
 
@@ -46,20 +59,12 @@ const saveInterview = async (): Promise<void> => {
   isLoading.value = false
 }
 
-const saveDateStage = (index: number) => {
-  if (interview.value?.stages && interview.value.stages.length) {
-    const date = interview.value.stages[index].date
-    interview.value.stages[index].date = dayjs(date).format('DD/MM/YYYY')
-  }
-}
-
 onMounted(async () => await getData())
 </script>
 
 <template>
   <app-progress v-if="isLoading" />
   <div v-else-if="interview?.id && !isLoading" class="content-interview">
-    {{ interview }}
     <app-card>
       <template #title>Собеседование в кампанию {{ interview.company }}</template>
       <template #content>
@@ -149,7 +154,6 @@ onMounted(async () => await getData())
             <div class="flex flex-column gap-2 mb-3">
               <label :for="`stage-calendar-${index}`">Дата прохождения этапа</label>
               <app-datepicker
-                @date-select="saveDateStage(index)"
                 v-model="stage.date"
                 :id="`stage-calendar-${index}`"
                 placeholder="03/05/2025"

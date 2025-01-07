@@ -52,6 +52,7 @@ onMounted(async () => {
   const listInterviews: Array<IInterview> = await getAllInterviews()
   interviews.value = [...listInterviews]
   isLoading.value = false
+  console.log(interviews.value)
 })
 </script>
 
@@ -65,12 +66,14 @@ onMounted(async () => {
     <h1>Список собеседований</h1>
     <app-data-table :value="interviews">
       <app-column field="company" header="Компания"></app-column>
-      <app-column filed="hrName" header="ИмяHR"></app-column>
+      <app-column filed="hrName" header="ИмяHR">
+        <template #body="slotProps">
+          <span>{{ slotProps.data.hrName || '-' }}</span>
+        </template>
+      </app-column>
       <app-column field="vacancyLink" header="Вакансия">
         <template #body="slotProps">
-          <a :href="slotProps.data.vacancyLink" target="_blank">{{
-            slotProps.data.vacancyLink
-          }}</a></template
+          <a :href="slotProps.data.vacancyLink" target="_blank">Ссылка на вакансию</a></template
         >>
       </app-column>
       <app-column header="Контакты">
@@ -101,6 +104,46 @@ onMounted(async () => {
               <span class="contacts__icon pi pi-phone"></span>
             </a>
           </div>
+        </template>
+      </app-column>
+      <app-column field="stages" header="Пройденные этапы">
+        <template #body="slotProps">
+          <div v-if="!slotProps.data.stages">Не заполнено</div>
+          <div v-else class="interview-stage">
+            <app-badge
+              v-for="(stage, i) in slotProps.data.stages"
+              :key="i"
+              :value="i + 1"
+            ></app-badge>
+          </div>
+        </template>
+      </app-column>
+      <app-column filed="salaryFrom" header="Запрлатная вилка">
+        <template #body="slotProps">
+          <span v-if="!slotProps.data.salaryFrom">Не заполнено</span>
+          <span v-else>{{ slotProps.data.salaryFrom }} - {{ slotProps.data.salaryTo }}</span>
+        </template>
+      </app-column>
+      <app-column header="Результат">
+        <template #body="slotProps">
+          <span v-if="!slotProps.data.result">Не заполнено</span>
+          <template v-else>
+            <div class="flex justify-between align-items-center gap-2">
+              <app-overlay-badge :severity="slotProps.data.result === 'Offer' ? '' : 'danger'">
+                <i
+                  :class="
+                    slotProps.data.result === 'Offer'
+                      ? 'pi pi-thumbs-up-fill'
+                      : 'pi pi-thumbs-down-fill'
+                  "
+                />
+              </app-overlay-badge>
+              <app-badge
+                :severity="slotProps.data.result === 'Offer' ? 'success' : 'danger'"
+                :value="slotProps.data.result === 'Offer' ? 'Оффер' : 'Отказ'"
+              ></app-badge>
+            </div>
+          </template>
         </template>
       </app-column>
       <app-column>
@@ -138,8 +181,8 @@ onMounted(async () => {
 .contacts__icon {
   font-size: 20px;
 }
-/* .interview-stages {
+.interview-stages {
   display: flex;
   gap: 5px;
-} */
+}
 </style>

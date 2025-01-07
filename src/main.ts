@@ -24,6 +24,8 @@ import DatePicker from 'primevue/datepicker'
 import Column from 'primevue/column'
 import InlineMessage from 'primevue/inlinemessage'
 import InputNumber from 'primevue/inputnumber'
+import Badge from 'primevue/badge';
+import OverlayBadge from 'primevue/overlaybadge';
 
 import App from './App.vue'
 import router from './router'
@@ -63,5 +65,7 @@ app.component('app-input-number', InputNumber)
 app.component('app-textarea', Textarea)
 app.component('app-datepicker', DatePicker)
 app.component('app-radio', RadioButton)
+app.component('app-badge', Badge)
+app.component('app-overlay-badge', OverlayBadge)
 
 app.mount('#app')
